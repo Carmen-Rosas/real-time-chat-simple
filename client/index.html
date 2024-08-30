@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <script type="module">
+        import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js"
+
+        const socket = io()
+
+        const form = document.getElementById("form")
+        const input = document.getElementById("input")
+        const messages = document.getElementById("messages")
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault()
+
+            if (input.value) {
+                socket.emit("chat message", input.value)
+                input.value = ""
+            }
+        })
+
+        socket.on("chat message", (msg) => {
+            const item = `<li>${msg}</li>`
+            messages.insertAdjacentHTML("beforeend", item)
+            messages.scrollTop = messages.scrollHeight
+        })
+
+    </script>
+    
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #FFF5E1; 
+            font-family: Arial, sans-serif;
+        }
+
+        #chat {
+            background-color: #FFDAB9; 
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            max-width: 100%;
+        }
+
+        #messages {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        #messages li {
+            background-color: #FFA07A; 
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        #form {
+            display: flex;
+        }
+
+        #input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #FF7F50; 
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #input::placeholder {
+            color: #FF7F50; 
+        }
+
+        button {
+            background-color: #FF7F50; 
+            border: none;
+            color: #ffffff;
+            padding: 10px 15px;
+            margin-left: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #FF6347; 
+        }
+    </style>
+</head>
+<body>
+    <section id="chat">
+        <ul id="messages"></ul>
+        <form id="form">
+            <input type="text" name="message" id="input" placeholder="Type a message" autocomplete="off" />
+            <button type="submit">Send</button>
+        </form>
+    </section>
+</body>
+</html>
